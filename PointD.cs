@@ -89,5 +89,10 @@ namespace MonoHelper
         {
             return (X < rect.Right) && (X >= rect.Left) && (Y >= rect.Bottom) && (Y < rect.Top);
         }
+
+        public bool InRect(PointD BiggerThan, PointD SmallerThan)
+        {
+            return ((X >= BiggerThan.X) && (Y >= BiggerThan.Y) && (X < SmallerThan.X) && (Y < SmallerThan.Y));
+        }
     }
 }

@@ -9,6 +9,8 @@ using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Linq;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace MonoHelper
 {
@@ -240,9 +242,11 @@ namespace MonoHelper
                     if (dist <= width)
                     {
                         float A = (float)Math.Min(border_size, width - dist);
-                        /*if (A < 1) colorData[x + y * texture.Width] = MixTwoColorsNA(colorData[x + y * texture.Width], new Color(color, A));
-                        else*/
-                        colorData[x + y * texture.Width] = new Color(color, A);
+                        if (A < 1)
+                        {
+                            if (A > 0) colorData[x + y * texture.Width] = MixTwoColorsNA(colorData[x + y * texture.Width], new Color(color, A));
+                        }
+                        else colorData[x + y * texture.Width] = new Color(color, 1f);
                     }
                 }
             }
@@ -472,6 +476,17 @@ namespace MonoHelper
             texture.SetData(cdnow);
             return texture;
         }
+        [DllImport("kernel32.dll")]
+        public static extern int GetCurrentThreadId();
+
+        public static ProcessThread CurrentThread()
+        {
+            int id = GetCurrentThreadId();
+            return
+                (from ProcessThread th in Process.GetCurrentProcess().Threads
+                    where th.Id == id
+                    select th).Single();
+        }
 
         public static Texture2D SmoothRight(this Texture2D texture, Color[] cd, int stepdir, Color TransColor)
         {
@@ -591,12 +606,57 @@ namespace MonoHelper
             return ((pos.X >= BiggerThan.X) && (pos.Y >= BiggerThan.Y) && (pos.X < SmallerThan.X) && (pos.Y < SmallerThan.Y));
         }
 
+        public static bool InRect(this Vector2 pos, Rectangle rectangle)
+        {
+            return ((pos.X >= rectangle.Left) && (pos.Y >= rectangle.Bottom) && (pos.X < rectangle.Right) && (pos.Y < rectangle.Top));
+        }
+
         public static bool InRect(this int pos, int width, int height)
         {
             int x = pos % width, y = pos / width;
             return ((x >= 0) && (y >= 0) && (x < width) && (y < height));
         }
 
+        public static bool RectangleIntersects(PointD l1, PointD r1, PointD l2, PointD r2)
+        {
+            //if (l1.X < l2.X && r2.X < r1.X && l1.Y < l2.Y && r2.Y < r1.Y) return true;
+            // if rectangle has area 0, no overlap
+            if (l1.X == r1.X || l1.Y == r1.Y || r2.X == l2.X || l2.Y == r2.Y)
+                return false;
+
+            // If one rectangle is on left side of other
+            if (l1.X > r2.X || l2.X > r1.X)
+                return false;
+
+            // If one rectangle is above other
+            if (r1.Y > l2.Y || r2.Y > l1.Y)
+                return false;
+
+            return true;
+        }
+
+        /// <summary>Returns true if the current application has focus, false otherwise</summary>
+        public static bool ApplicationIsActivated()
+        {
+            var activatedHandle = GetForegroundWindow();
+            if (activatedHandle == IntPtr.Zero)
+            {
+                return false;       // No window is currently activated
+            }
+
+            var procId = Process.GetCurrentProcess().Id;
+            int activeProcId;
+            GetWindowThreadProcessId(activatedHandle, out activeProcId);
+
+            return activeProcId == procId;
+        }
+
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
         public static void Fill(this Texture2D texture, Vector2 position, Color color_from, Color color_to)
         {
             Color[] data = new Color[texture.Width * texture.Height];
