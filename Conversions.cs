@@ -72,7 +72,15 @@ namespace MonoHelper
         /// </summary>
         public static float ToDegrees(this float val)
         {
-            return val / (float)Math.PI * 180f;
+            return val / MathF.PI * 180f;
+        }
+
+        /// <summary>
+        /// Converts from radians to degrees
+        /// </summary>
+        public static double ToDegrees(this double val)
+        {
+            return val / Math.PI * 180f;
         }
 
         /// <summary>
@@ -133,6 +141,11 @@ namespace MonoHelper
             double l = Math.Sqrt(v.X * v.X + v.Y * v.Y);
             double d = angle + (double)Math.Atan2(v.X, v.Y);
             return new PointD(Math.Sin(d) * l, Math.Cos(d) * l).ToVector2();
+        }
+
+        public static PointD ToPointD(this Point point)
+        {
+            return new PointD(point.X, point.Y);
         }
     }
 }

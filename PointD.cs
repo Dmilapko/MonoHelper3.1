@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -93,6 +94,11 @@ namespace MonoHelper
         public bool InRect(PointD BiggerThan, PointD SmallerThan)
         {
             return ((X >= BiggerThan.X) && (Y >= BiggerThan.Y) && (X < SmallerThan.X) && (Y < SmallerThan.Y));
+        }
+
+        public override string ToString()
+        {
+            return X.ToString(CultureInfo.InvariantCulture) + ", " + Y.ToString(CultureInfo.InvariantCulture);
         }
     }
 }

@@ -803,5 +803,33 @@ namespace MonoHelper
         {
             return Area_of_intersection_between_circle_and_rectangle(rect.Left, rect.Right, rect.Bottom, rect.Top, circle_center.X, circle_center.Y, r);
         }
+
+        public static double BezierLength(PointD p0, PointD p1, PointD p2, double posd = 1)
+        {
+            return get_l_analytic(p0.X, p0.Y, p1.X, p1.Y, p2.X, p2.Y, posd);
+        }
+
+        private static double get_l_analytic(double x0, double y0, double x1, double y1, double x2, double y2, double t) // get arclength from parameter t=<0,1>
+        {
+            double ax, ay, bx, by, A, B, C, b, c, u, k, L;
+            ax = x0 - x1 - x1 + x2;
+            ay = y0 - y1 - y1 + y2;
+            bx = x1 + x1 - x0 - x0;
+            by = y1 + y1 - y0 - y0;
+            A = 4.0 * ((ax * ax) + (ay * ay));
+            B = 4.0 * ((ax * bx) + (ay * by));
+            C = (bx * bx) + (by * by);
+            b = B / (2.0 * A);
+            c = C / A;
+            u = t + b;
+            k = c - (b * b);
+            L = 0.5 * Math.Sqrt(A) *
+                (
+                 (u * Math.Sqrt((u * u) + k))
+                - (b * Math.Sqrt((b * b) + k))
+                + (k * Math.Log(Math.Abs((u + Math.Sqrt((u * u) + k)) / (b + Math.Sqrt((b * b) + k)))))
+                );
+            return L;
+        }
     }
 }
