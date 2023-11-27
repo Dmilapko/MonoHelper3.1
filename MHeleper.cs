@@ -831,5 +831,10 @@ namespace MonoHelper
                 );
             return L;
         }
+
+        public static double Normalize(this double value, double mod)
+        {
+            return (value % mod + mod) % mod;
+        }
     }
 }
