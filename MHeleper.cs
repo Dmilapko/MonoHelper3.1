@@ -799,6 +799,13 @@ namespace MonoHelper
             return area(x0, x1, y0, y1, r);
         }
 
+        public static double AngleDif(double a1, double a2)
+        {
+            double difr = MHeleper.Normalize(a1, 2 * Math.PI) - MHeleper.Normalize(a2, 2 * Math.PI);
+            if (Math.Abs(difr) > Math.PI) difr = MHeleper.Normalize(a1 + Math.PI, 2 * Math.PI) - MHeleper.Normalize(a2 + Math.PI, 2 * Math.PI);
+            return difr;
+        }
+
         public static double Area_of_intersection_between_circle_and_rectangle(Rectangle rect, PointD circle_center, double r) // area of the intersection of a general box with a general circle
         {
             return Area_of_intersection_between_circle_and_rectangle(rect.Left, rect.Right, rect.Bottom, rect.Top, circle_center.X, circle_center.Y, r);

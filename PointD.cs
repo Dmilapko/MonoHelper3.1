@@ -33,6 +33,11 @@ namespace MonoHelper
             return new PointD(point1.X * point2.X, point1.Y * point2.Y);
         }
 
+        public static PointD operator /(PointD point1, PointD point2)
+        {
+            return new PointD(point1.X / point2.X, point1.Y / point2.Y);
+        }
+
         public static double DotOperator(PointD point1, PointD point2)
         {
             return point1.X*point2.X + point1.Y*point2.Y;   
@@ -57,6 +62,7 @@ namespace MonoHelper
         {
             return new PointD(point.X / divider, point.Y / divider);
         }
+
 
         public static bool operator == (PointD point1, PointD point2)
         {
