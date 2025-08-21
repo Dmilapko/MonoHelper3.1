@@ -75,8 +75,8 @@ namespace MonoHelper
             this.baseai = ai;
             now_gen = ai.evolution_history.Count - 1;
             this.show_gen = show_gen;
-            sliderbasetexture = MHeleper.CreateRectangle(graphicsDevice, widthpx / ai.evolution_history.Count() * ai.evolution_history.Count(), 20, Color.White);
-            sliderballtexture = MHeleper.CreateRectangle(graphicsDevice, widthpx / ai.evolution_history.Count(), 20, Color.Gray);
+            sliderbasetexture = MHeleper.CreateRectangle(graphicsDevice, widthpx, 20, Color.White);
+            sliderballtexture = MHeleper.CreateRectangle(graphicsDevice, widthpx / Math.Max(1,ai.evolution_history.Count()), 20, Color.Gray);
         }
 
         public virtual void SetAI(int ai_number)
